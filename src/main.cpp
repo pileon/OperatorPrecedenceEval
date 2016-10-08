@@ -20,28 +20,19 @@
 #include <functional>
 
 // This structure describes an operation
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Weffc++"
 struct operation
 {
-    operation()
-        : precedence_{0},
-          oper_{}
-    {}
-
-    operation(unsigned precedence, std::function<double(double const, double const)> oper)
-        : precedence_{precedence},
-          oper_{oper}
-    {}
-
-    unsigned precedence_;
-    std::function<double(double const, double const)> oper_;
+    unsigned precedence;
+    std::function<double(double const, double const)> oper;
 
     double operator()(double const first, double const second)
     {
-        return oper_(first, second);
+        return oper(first, second);
     }
 };
-
-
+#pragma GCC diagnostic pop
 
 int main()
 {
@@ -53,7 +44,6 @@ int main()
         { '*', { 2, [](double const first, double const second) { return first * second; }}},
         { '/', { 2, [](double const first, double const second) { return first / second; }}}
     };
-
 
     std::stack<double> value_stack;  // The value stack
     std::stack<char>   oper_stack;   // The operator stack
@@ -99,6 +89,9 @@ int main()
         }
     };
 
+    // Print a simple prompt
+    std::cout << "> ";
+
     // We read lines, each line is a separate expression
     std::string input_line;
     while (std::getline(std::cin, input_line))
@@ -128,8 +121,17 @@ int main()
                 continue;  // Continue with the parsing
             }
 
-            // TODO: Continue here!
+            unsigned top_precedence = operations[oper_stack.top()].precedence;
+            unsigned cur_precedence = operations[oper].precedence;
 
+            if (top_precedence >= cur_precedence)
+            {
+                evaluate_one();
+            }
+
+            // Push the new operator and value onto the stack
+            oper_stack.push(oper);
+            value_stack.push(second_value);
         }
 
         // Evaluate all remaining operations
@@ -137,5 +139,8 @@ int main()
 
         // Now print it all out
         std::cout << "Result = " << value_stack.top() << '\n';
+
+        // Print the prompt again
+        std::cout << "> ";
     }
 }
