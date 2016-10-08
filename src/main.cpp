@@ -7,14 +7,20 @@
 #include <unordered_map>   // For operator table
 #include <functional>
 
-// This structure describes an operation
+// GCC complains that the member variables are not initialized by the constructor
+// But there's no need to have an explicit constructor as we will initialize the
+// member variables inline when creating the instances of the structure
+// So, temporarily, disable this complaint (if enabled)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
+
+// This structure describes an operation
 struct operation
 {
     unsigned precedence;
     std::function<double(double const, double const)> oper;
 
+    // Function to actually evaluate an operation
     double operator()(double const first, double const second)
     {
         return oper(first, second);
