@@ -1,4 +1,5 @@
-// This code is placed in the public domain
+// This code is placed in the public domain, as-is, and without warranties or
+// claims of liability.
 
 #include <iostream>
 #include <string>
