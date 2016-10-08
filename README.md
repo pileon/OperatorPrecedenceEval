@@ -9,5 +9,4 @@ written an operator precedence parser, and I wanted to see if I could make
 a simple one that could be easy to understand.
 
 The code is well commented, but for the theory behind my parser and evaluator,
-as well as annotated source, please see the blog post at
-[SOME SITE HERE](http://example.com/).
+please see [this blog post](https://ghost.pileborg.se/2016/10/08/simple-stack-based-operator-precedence-parser/).
