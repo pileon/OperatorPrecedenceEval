@@ -26,6 +26,8 @@ int main()
 {
     // Set up the operator table with its precedences
     // For now we only handle the four basic arithmetic operations
+    // This table maps an operator to a corresponding operation structure containing
+    // precedence and function to evaluate the operation
     std::unordered_map<char, operation> operations = {
         { '+', { 1, [](double const first, double const second) { return first + second; }}},
         { '-', { 1, [](double const first, double const second) { return first - second; }}},
@@ -41,17 +43,17 @@ int main()
     // Pop the operations stack and return the operation
     auto pop_oper = [&oper_stack]()
     {
-        char oper = oper_stack.top();  // Get the top operator
-        oper_stack.pop();  // Pop the stack
-        return oper;  // Return the operator
+        char oper = oper_stack.top();
+        oper_stack.pop();
+        return oper;
     };
 
     // Pop the value stack and return the value
     auto pop_value = [&value_stack]()
     {
-        double value = value_stack.top();  // Get the top value
-        value_stack.pop();  // Pop the stack
-        return value;  // Return the value
+        double value = value_stack.top();
+        value_stack.pop();
+        return value;
     };
 
     // Perform a single operation
@@ -65,10 +67,11 @@ int main()
         double second = pop_value();
         double first = pop_value();
 
-        // Perform the operation
+        // Perform the operation and push the result
         value_stack.push(operations[oper](first, second));
     };
 
+    // Evaluate *all* operations on the operation stack
     auto evaluate_all = [&]()
     {
         while (!oper_stack.empty())
@@ -80,7 +83,7 @@ int main()
     // Print a simple prompt
     std::cout << "> ";
 
-    // We read lines, each line is a separate expression
+    // We read lines, each line is a separate but full expression
     std::string input_line;
     while (std::getline(std::cin, input_line))
     {
@@ -100,6 +103,7 @@ int main()
         while (input >> oper >> second_value)
         {
             // We have an operator and a second value, do something with it
+
             if (oper_stack.empty())
             {
                 // Operation stack empty, push the operation and the value
@@ -109,11 +113,17 @@ int main()
                 continue;  // Continue with the parsing
             }
 
+            // Get the precedence of the operator on top of the operator stack,
+            // and the current operator we just read
             unsigned top_precedence = operations[oper_stack.top()].precedence;
             unsigned cur_precedence = operations[oper].precedence;
 
             if (top_precedence >= cur_precedence)
             {
+                // The precedence of the operator on top of the stack was equal to
+                // or larger than the precedence of the currently read operator
+                // That means we have to evaluate it and get its result before
+                // we can push the current operator
                 evaluate_one();
             }
 
@@ -122,7 +132,7 @@ int main()
             value_stack.push(second_value);
         }
 
-        // Evaluate all remaining operations
+        // Evaluate all remaining operations, if there are any
         evaluate_all();
 
         // Now print it all out
