@@ -8,9 +8,10 @@
 #include <unordered_map>   // For operator table
 #include <functional>
 
-// GCC complains that the member variables are not initialized by the constructor
-// But there's no need to have an explicit constructor as we will initialize the
-// member variables inline when creating the instances of the structure
+// With the enabled warnings that I use by default GCC complains that the
+// member variables are not initialized by the constructor. But there's no
+// need to have an explicit constructor as we will initialize the member
+// variables inline when creating the instances of the structure.
 // So, temporarily, disable this complaint (if enabled)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Weffc++"
@@ -18,7 +19,11 @@
 // This structure describes an operation
 struct operation
 {
+    // The precedence of the operator
+    // Higher number means higher precedence
     unsigned precedence;
+
+    // The function to call to evaluate the operation
     std::function<double(double const, double const)> oper;
 
     // Function to actually evaluate an operation
