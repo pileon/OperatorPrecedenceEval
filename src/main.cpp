@@ -8,13 +8,15 @@
 #include <unordered_map>   // For operator table
 #include <functional>
 
+#ifdef __GNUC__
 // With the enabled warnings that I use by default GCC complains that the
 // member variables are not initialized by the constructor. But there's no
 // need to have an explicit constructor as we will initialize the member
 // variables inline when creating the instances of the structure.
 // So, temporarily, disable this complaint (if enabled)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Weffc++"
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Weffc++"
+#endif
 
 // This structure describes an operation
 struct operation
@@ -32,7 +34,10 @@ struct operation
         return oper(first, second);
     }
 };
-#pragma GCC diagnostic pop
+#ifdef __GNUC__
+// Restore original warnings
+# pragma GCC diagnostic pop
+#endif
 
 int main()
 {
